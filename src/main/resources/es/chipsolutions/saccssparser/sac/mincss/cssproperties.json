@@ -1,0 +1,7 @@
+{ 
+	"props":[
+		"es.chipsolutions.saccssparser.sac.mincss.properties.MinCssPropertyStrokeColor",
+		"es.chipsolutions.saccssparser.sac.mincss.properties.MinCssPropertyBackgroundColor",
+		"es.chipsolutions.saccssparser.sac.mincss.properties.MinCssPropertyShape"
+	]
+}
