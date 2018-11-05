@@ -30,7 +30,7 @@ public abstract class MinCssPropertyValue {
 	protected abstract MinCssPropertyValue parse(LexicalUnit l) throws MinCssInvalidPropertyValueException;
 	
 	static {
-		String fileContents = getResource("org/i3dat/sac/mincss/cssproperties.json");
+		String fileContents = getResource("es/chipsolutions/saccssparser/sac/mincss/cssproperties.json");
 		JSONObject obj = new JSONObject(fileContents);
 		JSONArray arr = obj.getJSONArray("props");
 		for (int i = 0; i < arr.length(); i++){
