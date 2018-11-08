@@ -30,6 +30,11 @@ public class MinCssParser implements DocumentHandler {
 	MinCssSelectorList selectorsParsed = new MinCssSelectorList();
 	ArrayList<MinCssPropertyList>currentPropSelList;
 
+        protected final MinCssPropertyParser propertyParser;
+        public MinCssParser(MinCssPropertyParser propertyParser) {
+            this.propertyParser = propertyParser;
+        }
+
 	public MinCssSelectorList getSelectorsParsed(){
 		return this.selectorsParsed;
 	}
@@ -185,7 +190,7 @@ public class MinCssParser implements DocumentHandler {
 		if (inStyleRule) {
 			propertyCounter++;
 			try {
-				MinCssProperty p = new MinCssProperty(name,MinCssPropertyValue.parse(name, value));
+				MinCssProperty p = new MinCssProperty(name,propertyParser.parse(name, value));
 				for(int i=0;i<currentPropSelList.size();i++){
 					currentPropSelList.get(i).put(p.getName(),p);
 				}
@@ -198,7 +203,22 @@ public class MinCssParser implements DocumentHandler {
 			}
 		}
 	}
-	public static MinCssSelectorList parse(File filename) 
+        public static MinCssSelectorList parse(File filename) throws FileNotFoundException, IOException,MinCssParseException,
+				MinCssSoftException{
+            MinCssPropertyParser propParser = new MinCssPropertyParser();
+            propParser.initDefault();
+            return parse(filename, propParser);
+        }
+	public static MinCssSelectorList parse(File filename, String resourcePropertyParserClases) 
+			throws FileNotFoundException, IOException,MinCssParseException,
+				MinCssSoftException{
+            MinCssPropertyParser propParser = new MinCssPropertyParser();
+            propParser.initFromResource(resourcePropertyParserClases);
+            return parse(filename, propParser);
+            
+	}
+        
+        public static MinCssSelectorList parse(File filename, MinCssPropertyParser propParser) 
 			throws FileNotFoundException, IOException,MinCssParseException,
 				MinCssSoftException{
 		System.setProperty("org.w3c.css.sac.parser", "org.w3c.flute.parser.Parser");
@@ -207,7 +227,7 @@ public class MinCssParser implements DocumentHandler {
 			source = new InputSource(new FileReader(filename));
 			Parser parser = new ParserFactory().makeParser();
 
-			MinCssParser demoSac = new MinCssParser();
+			MinCssParser demoSac = new MinCssParser(propParser);
 			parser.setDocumentHandler(demoSac);
 			parser.parseStyleSheet(source);
 			
@@ -225,6 +245,7 @@ public class MinCssParser implements DocumentHandler {
 		}
 		
 	}
+        
 	public static void main(String[] args) throws Exception {
 		/*
 		System.setProperty("org.w3c.css.sac.parser", "org.w3c.flute.parser.Parser");
